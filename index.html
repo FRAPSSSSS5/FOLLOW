@@ -1,410 +1,168 @@
 <!doctype html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zonk Rongsokan Design - Premium Spin</title>
-    <style>
-      body {
-        margin: 0;
-        background: #050505;
-        font-family: "Segoe UI", Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        color: white;
-        overflow: hidden;
-      }
-      .info {
-        font-size: 32px;
-        font-weight: 900;
-        margin-bottom: 20px;
-        height: 45px;
-        color: #ffcc00;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        text-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
-      }
-      .pointer {
-        width: 0;
-        height: 0;
-        border-left: 20px solid transparent;
-        border-right: 20px solid transparent;
-        border-top: 35px solid #ffffff;
-        margin: 0 auto -10px auto;
-        z-index: 100;
-        position: relative;
-        filter: drop-shadow(0 0 10px #fff);
-      }
-      .rainbow-frame {
-        padding: 6px;
-        background: linear-gradient(
-          90deg,
-          #ff0000,
-          #ff7f00,
-          #ffff00,
-          #00ff00,
-          #0000ff,
-          #4b0082,
-          #8b00ff
-        );
-        background-size: 400% 400%;
-        animation: moveRainbow 5s linear infinite;
-        border-radius: 20px;
-      }
-      @keyframes moveRainbow {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-      .spin-window {
-        width: 800px;
-        height: 180px;
-        background: #000;
-        border-radius: 15px;
-        position: relative;
-        overflow: hidden;
-      }
-      .track {
-        display: flex;
-        gap: 0;
-        padding: 30px 0;
-        will-change: transform;
-        transition-timing-function: cubic-bezier(0.1, 0, 0.1, 1);
-      }
-      .box {
-        min-width: 155px;
-        max-width: 155px;
-        height: 120px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-weight: 900;
-        box-sizing: border-box;
-      }
-      .zonk {
-        background: #2b1d0e;
-        color: #5d4037;
-        border: 2px solid #1b130a;
-      }
-      .jackpot {
-        background: radial-gradient(circle, #ffcc00 0%, #000 90%);
-        color: #ffd700;
-        border: 3px solid #ffd700;
-      }
-      .btn-container {
-        margin-top: 30px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-      }
-      .btn-group {
-        display: flex;
-        gap: 15px;
-      }
-      .spin-btn {
-        padding: 12px 30px;
-        font-size: 14px;
-        cursor: pointer;
-        border-radius: 50px;
-        text-transform: uppercase;
-        font-weight: bold;
-        border: 2px solid transparent;
-      }
-      .admin-btn {
-        background: rgba(0, 255, 0, 0.1);
-        color: #00ff00;
-        border-color: #00ff00;
-      }
-      .viewer-btn {
-        background: rgba(255, 68, 68, 0.1);
-        color: #ff4444;
-        border-color: #ff4444;
-      }
-      .spin-btn:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FLW Overlay</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: transparent;
+    width: 700px;
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+  #notif {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(0.85) translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  #notif.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+  }
+  .card {
+    background: rgba(0,0,0,0.78);
+    border: 2px solid rgba(255,200,0,0.5);
+    border-radius: 16px;
+    padding: 18px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 0 30px rgba(255,200,0,0.15), 0 4px 20px rgba(0,0,0,0.6);
+  }
+  .title {
+    font-size: 42px;
+    font-weight: 900;
+    color: #FFD700;
+    letter-spacing: 3px;
+    text-shadow: 0 0 12px rgba(255,215,0,0.8), 0 2px 6px rgba(0,0,0,0.9);
+    line-height: 1;
+  }
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,200,0,0.5), transparent);
+    margin: 2px 0;
+  }
+  .sub {
+    font-size: 18px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 2px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sub .arrow { color: #FFD700; font-size: 14px; }
+  #username {
+    color: #FFD700;
+    font-size: 20px;
+    font-weight: 900;
+    text-shadow: 0 0 8px rgba(255,215,0,0.7);
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #queue-badge {
+    display: none;
+    margin-top: 6px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    font-family: monospace;
+  }
+</style>
+</head>
+<body>
+<div id="notif">
+  <div class="card">
+    <div class="title">FLW = 1 SPIN</div>
+    <div class="divider"></div>
+    <div class="sub">FOLLOW <span class="arrow">▼</span></div>
+    <div id="username">@username</div>
+  </div>
+  <div id="queue-badge"></div>
+</div>
+<script>
+const notif      = document.getElementById("notif");
+const usernameEl = document.getElementById("username");
+const queueBadge = document.getElementById("queue-badge");
+let queue   = [];
+let running = false;
 
-      /* Countdown overlay */
-      #cooldownOverlay {
-        display: none;
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.75);
-        border-radius: 15px;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        gap: 6px;
-        z-index: 50;
+function showNotif(name) {
+  usernameEl.textContent = "@" + name;
+  notif.classList.add("show");
+}
+function hideNotif() { notif.classList.remove("show"); }
+function updateBadge() {
+  if (queue.length > 0) {
+    queueBadge.style.display = "block";
+    queueBadge.textContent = "+" + queue.length + " antrian";
+  } else {
+    queueBadge.style.display = "none";
+  }
+}
+function runNotif(name) {
+  return new Promise(resolve => {
+    showNotif(name);
+    setTimeout(() => {
+      hideNotif();
+      setTimeout(resolve, 500);
+    }, 4000);
+  });
+}
+async function processQueue() {
+  if (running || queue.length === 0) return;
+  running = true;
+  while (queue.length > 0) {
+    const name = queue.shift();
+    updateBadge();
+    await runNotif(name);
+  }
+  running = false;
+  updateBadge();
+}
+function addFollow(name) {
+  if (queue.length >= 30) return;
+  queue.push(name);
+  updateBadge();
+  if (!running) processQueue();
+}
+function connect() {
+  const params = new URLSearchParams(window.location.search);
+  const wsHost = params.get("ws") || "localhost:21213";
+  const ws = new WebSocket("ws://" + wsHost + "/");
+  ws.onopen = () => console.log("[TikFinity] Terhubung");
+  ws.onmessage = (e) => {
+    try {
+      const res = JSON.parse(e.data);
+      if (res.event === "follow") {
+        const name = res.data?.nickname || res.data?.uniqueId || "follower";
+        addFollow(name);
       }
-      #cooldownOverlay.visible {
-        display: flex;
-      }
-      #cooldownNumber {
-        font-size: 64px;
-        font-weight: 900;
-        color: #ffcc00;
-        text-shadow: 0 0 20px rgba(255, 204, 0, 0.9);
-        line-height: 1;
-        animation: pulse 1s ease-in-out infinite;
-      }
-      #cooldownLabel {
-        font-size: 14px;
-        color: #aaa;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-      }
-      #queueInfo {
-        font-size: 13px;
-        color: #666;
-        margin-top: 4px;
-      }
-      @keyframes pulse {
-        0%,
-        100% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(1.1);
-          opacity: 0.8;
-        }
-      }
-      #queueBadge {
-        font-size: 13px;
-        color: #888;
-        letter-spacing: 1px;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="display" class="info">FOLLOW = USERNAME</div>
-    <div class="pointer"></div>
-    <div class="rainbow-frame">
-      <div class="spin-window" style="position: relative">
-        <div class="track" id="track"></div>
-        <div id="cooldownOverlay">
-          <div id="cooldownNumber">10</div>
-          <div id="cooldownLabel">Detik jeda</div>
-          <div id="queueInfo"></div>
-        </div>
-      </div>
-    </div>
-    <div class="btn-container">
-      <div class="btn-group">
-        <button
-          id="adminBtn"
-          class="spin-btn admin-btn"
-          onclick="addSpin('ADMIN')"
-        >
-          🚀 Test Admin (Win)
-        </button>
-        <button
-          id="viewerBtn"
-          class="spin-btn viewer-btn"
-          onclick="addSpin('TEST')"
-        >
-          💀 Test Viewer (Zonk)
-        </button>
-      </div>
-      <div id="queueBadge">Antrian: 0</div>
-      <div id="status">TIKFINITY: DISCONNECTED</div>
-    </div>
-
-    <script>
-      const track = document.getElementById("track");
-      const display = document.getElementById("display");
-      const adminBtn = document.getElementById("adminBtn");
-      const viewerBtn = document.getElementById("viewerBtn");
-      const cooldownOverlay = document.getElementById("cooldownOverlay");
-      const cooldownNumber = document.getElementById("cooldownNumber");
-      const queueInfo = document.getElementById("queueInfo");
-      const queueBadge = document.getElementById("queueBadge");
-
-      const BOX_WIDTH = 155;
-      const COOLDOWN_SECONDS = 10; // <-- Ganti angka ini untuk ubah durasi jeda
-
-      let boxesData = [];
-      let queue = [];
-      let spinning = false;
-
-      function updateQueueBadge() {
-        queueBadge.innerText = `Antrian: ${queue.length}`;
-      }
-
-      function initTrack() {
-        track.innerHTML = "";
-        boxesData = [];
-        for (let i = 0; i < 400; i++) {
-          let type = i % 4 === 0 ? "jackpot" : "zonk";
-          let box = document.createElement("div");
-          box.className = `box ${type}`;
-          box.innerHTML =
-            type === "zonk"
-              ? `<div class="icon">💀</div><div>AMPAS</div>`
-              : `<div class="icon">💎</div><div>JACKPOT</div>`;
-          track.appendChild(box);
-          boxesData.push({ type, index: i });
-        }
-      }
-      initTrack();
-
-      function connect() {
-        const socket = new WebSocket("ws://localhost:21213/");
-        socket.onopen = () => {
-          document.getElementById("status").innerText = "TIKFINITY: CONNECTED";
-        };
-        socket.onmessage = (event) => {
-          const response = JSON.parse(event.data);
-          switch (response.event) {
-            case "follow":
-              addSpin(response.data.uniqueId);
-              console.log(
-                response.data.uniqueId + " baru saja follow dan mulai spin!",
-              );
-              break;
-            case "chat":
-              if (response.data.comment.includes("!spin")) {
-                addSpin(response.data.uniqueId);
-              }
-              break;
-            default:
-              console.log("Event lain:", response.event);
-          }
-        };
-        socket.onclose = () => {
-          document.getElementById("status").innerText =
-            "TIKFINITY: DISCONNECTED (Retrying...)";
-          setTimeout(connect, 3000);
-        };
-      }
-      connect();
-
-      function cooldown(seconds) {
-        return new Promise((resolve) => {
-          let remaining = seconds;
-          cooldownOverlay.classList.add("visible");
-          cooldownNumber.innerText = remaining;
-          updateQueueInfo();
-
-          const interval = setInterval(() => {
-            remaining--;
-            cooldownNumber.innerText = remaining;
-            updateQueueInfo();
-            if (remaining <= 0) {
-              clearInterval(interval);
-              cooldownOverlay.classList.remove("visible");
-              resolve();
-            }
-          }, 1000);
-        });
-      }
-
-      function updateQueueInfo() {
-        const len = queue.length;
-        queueInfo.innerText = len > 0 ? `${len} orang menunggu di antrian` : "";
-      }
-
-      async function runSpin(name) {
-        return new Promise((resolve) => {
-          spinning = true;
-          adminBtn.disabled = true;
-          viewerBtn.disabled = true;
-
-          display.innerText = "LAGI SPIN: " + name;
-          display.style.color = "#ffcc00";
-
-          track.style.transition = "none";
-          track.style.transform = "translateX(0px)";
-          track.offsetHeight;
-
-          const isAdmin = name.toUpperCase() === "ADMIN";
-          const pool = boxesData.filter(
-            (b) =>
-              b.type === (isAdmin ? "jackpot" : "zonk") &&
-              b.index > 300 &&
-              b.index < 350,
-          );
-          const target = pool[Math.floor(Math.random() * pool.length)];
-          const finalMove = target.index * BOX_WIDTH + BOX_WIDTH / 2 - 800 / 2;
-
-          track.style.transition = "transform 8s cubic-bezier(0.1, 0, 0.1, 1)";
-          track.style.transform = `translateX(-${finalMove}px)`;
-
-          setTimeout(() => {
-            if (target.type === "jackpot") {
-              display.innerText = "SELAMAT " + name + "! 💎✨";
-              display.style.color = "#ffd700";
-              sendDiscordNotification(name);
-            } else {
-              display.innerText = name + " ZONK! 💀";
-              display.style.color = "#ff4444";
-            }
-            resolve();
-          }, 8500);
-        });
-      }
-
-      async function processQueue() {
-        if (queue.length > 0 && !spinning) {
-          const name = queue.shift();
-          updateQueueBadge();
-
-          await runSpin(name);
-
-          // Jeda 10 detik sebelum spin berikutnya
-          await cooldown(COOLDOWN_SECONDS);
-
-          spinning = false;
-          adminBtn.disabled = false;
-          viewerBtn.disabled = false;
-
-          processQueue();
-        }
-      }
-
-      async function sendDiscordNotification(winnerName) {
-        const webhookUrl =
-          "https://discord.com/api/webhooks/1481213643247845416/hNk7AR7Cu8lVcXieDjks_sPSUAGFs8lipQh_LwYHJ4AtswcunCNG7T6QyfV54bSch7Bm";
-        const payload = {
-          content: `💎 **JACKPOT BARU!** 💎`,
-          embeds: [
-            {
-              title: "Pemenang Jackpot",
-              description: `Selamat kepada **${winnerName}** telah mendapatkan Jackpot!`,
-              color: 16766720,
-              timestamp: new Date(),
-            },
-          ],
-        };
-        try {
-          await fetch(webhookUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-        } catch (error) {
-          console.error("Gagal kirim ke Discord:", error);
-        }
-      }
-
-      function addSpin(name) {
-        queue.push(name);
-        updateQueueBadge();
-        processQueue();
-      }
-    </script>
-  </body>
+    } catch(err) {}
+  };
+  ws.onclose = () => setTimeout(connect, 3000);
+}
+connect();
+window.addFollow = addFollow;
+</script>
+</body>
 </html>
