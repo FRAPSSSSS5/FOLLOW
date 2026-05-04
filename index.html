@@ -3,114 +3,289 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>FLW Overlay</title>
+<title>FLW Spin Overlay</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
     background: transparent;
     width: 700px;
-    height: 200px;
+    height: 280px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: "Segoe UI", Arial, sans-serif;
   }
-  #notif {
+
+  /* WRAPPER UTAMA */
+  #overlay {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+    width: 700px;
+    gap: 0;
     opacity: 0;
-    transform: scale(0.85) translateY(10px);
+    transform: scale(0.9) translateY(-10px);
     pointer-events: none;
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  #notif.show {
+  #overlay.show {
     opacity: 1;
     transform: scale(1) translateY(0);
     pointer-events: auto;
   }
-  .card {
-    background: rgba(0,0,0,0.78);
-    border: 2px solid rgba(255,200,0,0.5);
-    border-radius: 16px;
-    padding: 18px 48px;
+
+  /* ── NOTIF CARD (tahap 1) ── */
+  #notif-card {
+    background: rgba(0,0,0,0.82);
+    border: 2px solid rgba(255,200,0,0.55);
+    border-radius: 14px 14px 0 0;
+    padding: 12px 48px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 0 30px rgba(255,200,0,0.15), 0 4px 20px rgba(0,0,0,0.6);
+    gap: 4px;
+    width: 700px;
+    box-shadow: 0 0 24px rgba(255,200,0,0.15);
   }
-  .title {
-    font-size: 42px;
+
+  .flw-title {
+    font-size: 36px;
     font-weight: 900;
     color: #FFD700;
     letter-spacing: 3px;
     text-shadow: 0 0 12px rgba(255,215,0,0.8), 0 2px 6px rgba(0,0,0,0.9);
     line-height: 1;
   }
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(255,200,0,0.5), transparent);
-    margin: 2px 0;
-  }
-  .sub {
-    font-size: 18px;
+
+  .flw-sub {
+    font-size: 13px;
     font-weight: 700;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.7);
     letter-spacing: 2px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
-  .sub .arrow { color: #FFD700; font-size: 14px; }
-  #username {
+  .flw-sub .arrow { color: #FFD700; }
+
+  #flw-username {
     color: #FFD700;
-    font-size: 20px;
+    font-size: 17px;
     font-weight: 900;
     text-shadow: 0 0 8px rgba(255,215,0,0.7);
-    max-width: 400px;
+    max-width: 500px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+  /* ── SPIN SECTION (tahap 2) ── */
+  #spin-section {
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+  #spin-section.open {
+    max-height: 200px;
+  }
+
+  /* pointer */
+  .pointer {
+    width: 0; height: 0;
+    border-left: 12px solid transparent;
+    border-right: 12px solid transparent;
+    border-top: 18px solid rgba(255,255,255,0.85);
+    margin-bottom: -1px;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+  }
+
+  /* slot window */
+  .spin-window {
+    width: 700px;
+    height: 120px;
+    background: rgba(0,0,0,0.88);
+    border-radius: 0 0 14px 14px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-top: none;
+    box-shadow: 0 0 0 1px rgba(255,204,0,0.25), inset 0 0 24px rgba(0,0,0,0.5);
+    position: relative;
+  }
+
+  /* vignette */
+  .spin-window::before,
+  .spin-window::after {
+    content: "";
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 110px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .spin-window::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(0,0,0,0.9), transparent);
+  }
+  .spin-window::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(0,0,0,0.9), transparent);
+  }
+
+  /* center indicator */
+  .center-line {
+    position: absolute;
+    left: 50%; top: 0; bottom: 0;
+    transform: translateX(-50%);
+    width: 140px;
+    border: 2px solid rgba(255,204,0,0.55);
+    border-radius: 8px;
+    z-index: 3;
+    pointer-events: none;
+    box-shadow: 0 0 8px rgba(255,204,0,0.25);
+  }
+
+  /* track */
+  .track {
+    display: flex;
+    align-items: center;
+    height: 120px;
+    will-change: transform;
+  }
+
+  /* kotak slot */
+  .box {
+    min-width: 138px;
+    width: 138px;
+    height: 96px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    margin: 0 1px;
+    font-weight: 900;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .box-icon  { font-size: 26px; margin-bottom: 5px; line-height: 1; }
+  .box-label { font-size: 10px; letter-spacing: 1px; font-weight: 700; }
+
+  .zonk {
+    background: linear-gradient(135deg, #1a1008, #2b1d0e);
+    border: 1px solid #3d2a14;
+    color: #6d5030;
+  }
+  .jackpot {
+    background: linear-gradient(135deg, #1a1500, #2a2000);
+    border: 1px solid rgba(255,204,0,0.4);
+    color: #ffcc00;
+    box-shadow: inset 0 0 12px rgba(255,204,0,0.12);
+  }
+  .jackpot .box-icon { filter: drop-shadow(0 0 5px rgba(255,204,0,0.8)); }
+
+  /* ── RESULT BADGE ── */
+  #result-badge {
+    margin-top: 8px;
+    padding: 5px 22px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  #result-badge.show { opacity: 1; transform: scale(1); }
+  #result-badge.is-jackpot {
+    background: rgba(255,204,0,0.18);
+    border: 2px solid rgba(255,204,0,0.75);
+    color: #FFD700;
+    text-shadow: 0 0 8px rgba(255,204,0,0.6);
+  }
+  #result-badge.is-zonk {
+    background: rgba(80,40,10,0.45);
+    border: 2px solid rgba(120,70,20,0.55);
+    color: #7a5030;
+  }
+
+  /* queue */
   #queue-badge {
     display: none;
-    margin-top: 6px;
-    font-size: 11px;
-    color: rgba(255,255,255,0.4);
+    margin-top: 5px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
     letter-spacing: 1px;
     font-family: monospace;
   }
 </style>
 </head>
 <body>
-<div id="notif">
-  <div class="card">
-    <div class="title">FLW = 1 SPIN</div>
-    <div class="divider"></div>
-    <div class="sub">FOLLOW <span class="arrow">▼</span></div>
-    <div id="username">@username</div>
+
+<div id="overlay">
+  <!-- TAHAP 1: Notif follow -->
+  <div id="notif-card">
+    <div class="flw-title">FLW = 1 SPIN</div>
+    <div class="flw-sub">FOLLOW <span class="arrow">▼</span></div>
+    <div id="flw-username">@username</div>
   </div>
+
+  <!-- TAHAP 2: Spin slot -->
+  <div id="spin-section">
+    <div class="pointer"></div>
+    <div class="spin-window">
+      <div class="center-line"></div>
+      <div class="track" id="track"></div>
+    </div>
+  </div>
+
+  <div id="result-badge"></div>
   <div id="queue-badge"></div>
 </div>
+
 <script>
-const notif      = document.getElementById("notif");
-const usernameEl = document.getElementById("username");
-const queueBadge = document.getElementById("queue-badge");
+const overlay     = document.getElementById("overlay");
+const spinSection = document.getElementById("spin-section");
+const track       = document.getElementById("track");
+const flwUsername = document.getElementById("flw-username");
+const resultBadge = document.getElementById("result-badge");
+const queueBadge  = document.getElementById("queue-badge");
+
+const BOX_W = 140;
+const TOTAL = 300;
+
+let boxes   = [];
 let queue   = [];
 let running = false;
 
-function showNotif(name) {
-  usernameEl.textContent = "@" + name;
-  notif.classList.add("show");
+/* ── BUILD TRACK ── */
+function buildTrack() {
+  track.innerHTML = "";
+  boxes = [];
+  for (let i = 0; i < TOTAL; i++) {
+    const isJackpot = (i % 5 === 0);
+    const type = isJackpot ? "jackpot" : "zonk";
+    const el = document.createElement("div");
+    el.className = "box " + type;
+    el.innerHTML = `
+      <div class="box-icon">${isJackpot ? "💎" : "💀"}</div>
+      <div class="box-label">${isJackpot ? "JACKPOT" : "ZONK"}</div>
+    `;
+    track.appendChild(el);
+    boxes.push({ el, type, index: i });
+  }
 }
-function hideNotif() { notif.classList.remove("show"); }
+buildTrack();
+
+/* ── HELPERS ── */
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
 function updateBadge() {
   if (queue.length > 0) {
     queueBadge.style.display = "block";
@@ -119,37 +294,94 @@ function updateBadge() {
     queueBadge.style.display = "none";
   }
 }
-function runNotif(name) {
-  return new Promise(resolve => {
-    showNotif(name);
-    setTimeout(() => {
-      hideNotif();
-      setTimeout(resolve, 500);
-    }, 4000);
-  });
+
+/* ── MAIN FLOW ── */
+async function runFollow(name) {
+  // Reset state
+  resultBadge.className = "";
+  resultBadge.classList.remove("show");
+  spinSection.classList.remove("open");
+  track.style.transition = "none";
+  track.style.transform  = "translateX(0px)";
+
+  // Tampilkan overlay + notif follow
+  flwUsername.textContent = "@" + name;
+  overlay.classList.add("show");
+
+  // Tunggu 2 detik baca notif
+  await sleep(2000);
+
+  // Buka spin section
+  spinSection.classList.add("open");
+  await sleep(600); // tunggu animasi buka
+
+  // Pilih target
+  const isJackpot = Math.random() < 0.20;
+  const pool = boxes.filter(b =>
+    b.type === (isJackpot ? "jackpot" : "zonk") &&
+    b.index > 200 && b.index < 285
+  );
+  const target = pool[Math.floor(Math.random() * pool.length)];
+  const finalX = target.index * BOX_W - 280;
+
+  // Spin!
+  track.offsetHeight; // force reflow
+  track.style.transition = "transform 7s cubic-bezier(0.08,0,0.08,1)";
+  track.style.transform  = `translateX(-${finalX}px)`;
+
+  await sleep(7400);
+
+  // Tampilkan hasil
+  if (target.type === "jackpot") {
+    resultBadge.textContent = "⭐ JACKPOT! ⭐";
+    resultBadge.className = "is-jackpot";
+  } else {
+    resultBadge.textContent = "💀 ZONK";
+    resultBadge.className = "is-zonk";
+  }
+  resultBadge.classList.add("show");
+
+  await sleep(2500);
+
+  // Sembunyikan semua
+  overlay.classList.remove("show");
+  await sleep(600);
+
+  spinSection.classList.remove("open");
+  resultBadge.classList.remove("show");
 }
+
+/* ── QUEUE ── */
 async function processQueue() {
   if (running || queue.length === 0) return;
   running = true;
+  updateBadge();
+
   while (queue.length > 0) {
     const name = queue.shift();
     updateBadge();
-    await runNotif(name);
+    await runFollow(name);
+    await sleep(400);
   }
+
   running = false;
   updateBadge();
 }
+
 function addFollow(name) {
   if (queue.length >= 30) return;
   queue.push(name);
   updateBadge();
   if (!running) processQueue();
 }
+
+/* ── TIKFINITY ── */
 function connect() {
   const params = new URLSearchParams(window.location.search);
   const wsHost = params.get("ws") || "localhost:21213";
   const ws = new WebSocket("ws://" + wsHost + "/");
-  ws.onopen = () => console.log("[TikFinity] Terhubung");
+
+  ws.onopen  = () => console.log("[TikFinity] Terhubung ✓");
   ws.onmessage = (e) => {
     try {
       const res = JSON.parse(e.data);
@@ -162,6 +394,7 @@ function connect() {
   ws.onclose = () => setTimeout(connect, 3000);
 }
 connect();
+
 window.addFollow = addFollow;
 </script>
 </body>
