@@ -316,7 +316,7 @@ async function runFollow(name) {
   await sleep(600); // tunggu animasi buka
 
   // Pilih target
-  const isJackpot = Math.random() < 0.20;
+  const isJackpot = Math.random() < 0;
   const pool = boxes.filter(b =>
     b.type === (isJackpot ? "jackpot" : "zonk") &&
     b.index > 200 && b.index < 285
