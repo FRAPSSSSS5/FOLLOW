@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>FLW Spin Overlay</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@700&display=swap');
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -15,7 +17,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family: "Rajdhani", "Segoe UI", Arial, sans-serif;
   }
 
   /* WRAPPER UTAMA */
@@ -26,9 +28,9 @@
     width: 700px;
     gap: 0;
     opacity: 0;
-    transform: scale(0.9) translateY(-10px);
+    transform: scale(0.92) translateY(-14px);
     pointer-events: none;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1);
   }
   #overlay.show {
     opacity: 1;
@@ -36,52 +38,89 @@
     pointer-events: auto;
   }
 
-  /* ── NOTIF CARD (tahap 1) ── */
+  /* ── NOTIF CARD ── */
   #notif-card {
-    background: rgba(0,0,0,0.82);
-    border: 2px solid rgba(255,200,0,0.55);
-    border-radius: 14px 14px 0 0;
-    padding: 12px 48px 10px;
+    background: linear-gradient(180deg, rgba(10,6,2,0.97) 0%, rgba(18,10,3,0.95) 100%);
+    border: 2px solid #ff6a00;
+    border-bottom: none;
+    border-radius: 16px 16px 0 0;
+    padding: 10px 48px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 2px;
     width: 700px;
-    box-shadow: 0 0 24px rgba(255,200,0,0.15);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,106,0,0.3),
+      0 -4px 30px rgba(255,106,0,0.25),
+      inset 0 1px 0 rgba(255,160,60,0.15);
+  }
+
+  /* animated shimmer top line */
+  #notif-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, #ff9a40, #fff, #ff9a40, transparent);
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%   { left: -100%; }
+    60%  { left: 100%; }
+    100% { left: 100%; }
+  }
+
+  /* corner accents */
+  #notif-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 100%, rgba(255,100,0,0.08), transparent);
+    pointer-events: none;
   }
 
   .flw-title {
-    font-size: 36px;
-    font-weight: 900;
-    color: #FFD700;
-    letter-spacing: 3px;
-    text-shadow: 0 0 12px rgba(255,215,0,0.8), 0 2px 6px rgba(0,0,0,0.9);
+    font-family: "Bebas Neue", "Segoe UI", Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #ff8c30;
+    letter-spacing: 5px;
+    text-shadow: 0 0 10px rgba(255,120,30,0.7);
     line-height: 1;
   }
 
   .flw-sub {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 2px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 3px;
     display: flex;
     align-items: center;
     gap: 6px;
   }
-  .flw-sub .arrow { color: #FFD700; }
+  .flw-sub .arrow { color: #ff6a00; }
 
   #flw-username {
-    color: #FFD700;
-    font-size: 42px;
-    font-weight: 900;
-    text-shadow: 0 0 8px rgba(255,215,0,0.7);
-    max-width: 500px;
+    font-family: "Bebas Neue", "Segoe UI", Arial, sans-serif;
+    color: #ffffff;
+    font-size: 50px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-shadow:
+      0 0 20px rgba(255,140,40,0.9),
+      0 0 40px rgba(255,100,0,0.5),
+      0 2px 4px rgba(0,0,0,1);
+    max-width: 580px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    line-height: 1.1;
   }
 
-  /* ── SPIN SECTION (tahap 2) ── */
+  /* ── SPIN SECTION ── */
   #spin-section {
     width: 700px;
     display: flex;
@@ -90,7 +129,7 @@
     gap: 0;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease;
+    transition: max-height 0.55s cubic-bezier(0.22,1,0.36,1);
   }
   #spin-section.open {
     max-height: 200px;
@@ -99,23 +138,27 @@
   /* pointer */
   .pointer {
     width: 0; height: 0;
-    border-left: 12px solid transparent;
-    border-right: 12px solid transparent;
-    border-top: 18px solid rgba(255,255,255,0.85);
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 20px solid #ff6a00;
     margin-bottom: -1px;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 0 6px rgba(255,106,0,0.9)) drop-shadow(0 2px 3px rgba(0,0,0,0.8));
+    z-index: 10;
   }
 
   /* slot window */
   .spin-window {
     width: 700px;
-    height: 120px;
-    background: rgba(0,0,0,0.88);
-    border-radius: 0 0 14px 14px;
+    height: 118px;
+    background: linear-gradient(180deg, rgba(5,2,0,0.98) 0%, rgba(12,6,2,0.96) 100%);
+    border-radius: 0 0 16px 16px;
     overflow: hidden;
-    border: 2px solid rgba(255,255,255,0.08);
+    border: 2px solid #ff6a00;
     border-top: none;
-    box-shadow: 0 0 0 1px rgba(255,204,0,0.25), inset 0 0 24px rgba(0,0,0,0.5);
+    box-shadow:
+      0 0 0 1px rgba(255,106,0,0.2),
+      0 6px 30px rgba(255,80,0,0.2),
+      inset 0 0 40px rgba(0,0,0,0.6);
     position: relative;
   }
 
@@ -125,37 +168,54 @@
     content: "";
     position: absolute;
     top: 0; bottom: 0;
-    width: 110px;
+    width: 130px;
     z-index: 2;
     pointer-events: none;
   }
   .spin-window::before {
     left: 0;
-    background: linear-gradient(to right, rgba(0,0,0,0.9), transparent);
+    background: linear-gradient(to right, rgba(5,2,0,0.97), transparent);
   }
   .spin-window::after {
     right: 0;
-    background: linear-gradient(to left, rgba(0,0,0,0.9), transparent);
+    background: linear-gradient(to left, rgba(5,2,0,0.97), transparent);
   }
 
   /* center indicator */
   .center-line {
     position: absolute;
-    left: 50%; top: 0; bottom: 0;
+    left: 50%; top: 6px; bottom: 6px;
     transform: translateX(-50%);
-    width: 140px;
-    border: 2px solid rgba(255,204,0,0.55);
-    border-radius: 8px;
+    width: 142px;
+    border: 2px solid #ff6a00;
+    border-radius: 10px;
     z-index: 3;
     pointer-events: none;
-    box-shadow: 0 0 8px rgba(255,204,0,0.25);
+    box-shadow:
+      0 0 0 1px rgba(255,106,0,0.2),
+      0 0 16px rgba(255,106,0,0.5),
+      inset 0 0 16px rgba(255,80,0,0.08);
+  }
+
+  /* center glow pulse */
+  .center-line::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border-radius: 13px;
+    border: 1px solid rgba(255,106,0,0.25);
+    animation: pulse-ring 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50%       { opacity: 0.7; transform: scale(1.01); }
   }
 
   /* track */
   .track {
     display: flex;
     align-items: center;
-    height: 120px;
+    height: 118px;
     will-change: transform;
   }
 
@@ -168,51 +228,89 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     margin: 0 1px;
     font-weight: 900;
     user-select: none;
     flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
   }
-  .box-icon  { font-size: 26px; margin-bottom: 5px; line-height: 1; }
-  .box-label { font-size: 10px; letter-spacing: 1px; font-weight: 700; }
 
+  .box-icon  { font-size: 28px; margin-bottom: 6px; line-height: 1; }
+  .box-label {
+    font-family: "Bebas Neue", Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-weight: 400;
+  }
+
+  /* ZONK — merah membara */
   .zonk {
-    background: linear-gradient(135deg, #1a1008, #2b1d0e);
-    border: 1px solid #3d2a14;
-    color: #6d5030;
+    background: linear-gradient(155deg, #1c0505 0%, #2e0a0a 50%, #1a0404 100%);
+    border: 1px solid rgba(200,30,30,0.5);
+    color: #e03030;
+    box-shadow: inset 0 0 20px rgba(180,0,0,0.2);
   }
+  .zonk::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(220,40,40,0.12), transparent);
+  }
+  .zonk .box-icon {
+    filter: drop-shadow(0 0 6px rgba(255,50,50,0.8));
+  }
+
+  /* JACKPOT — emas menyala */
   .jackpot {
-    background: linear-gradient(135deg, #1a1500, #2a2000);
-    border: 1px solid rgba(255,204,0,0.4);
+    background: linear-gradient(155deg, #1a1200 0%, #2c1e00 50%, #181000 100%);
+    border: 1px solid rgba(255,180,0,0.6);
     color: #ffcc00;
-    box-shadow: inset 0 0 12px rgba(255,204,0,0.12);
+    box-shadow:
+      inset 0 0 20px rgba(255,160,0,0.15),
+      0 0 8px rgba(255,160,0,0.15);
   }
-  .jackpot .box-icon { filter: drop-shadow(0 0 5px rgba(255,204,0,0.8)); }
+  .jackpot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(255,200,0,0.15), transparent);
+  }
+  .jackpot .box-icon {
+    filter: drop-shadow(0 0 8px rgba(255,200,0,1));
+  }
 
   /* ── RESULT BADGE ── */
   #result-badge {
     margin-top: 8px;
-    padding: 5px 22px;
-    border-radius: 30px;
-    font-size: 15px;
-    font-weight: 900;
-    letter-spacing: 1px;
+    padding: 6px 28px;
+    border-radius: 40px;
+    font-family: "Bebas Neue", Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 3px;
     opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(0.7) translateY(6px);
+    transition: opacity 0.35s cubic-bezier(0.22,1,0.36,1), transform 0.35s cubic-bezier(0.22,1,0.36,1);
   }
-  #result-badge.show { opacity: 1; transform: scale(1); }
+  #result-badge.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
   #result-badge.is-jackpot {
-    background: rgba(255,204,0,0.18);
-    border: 2px solid rgba(255,204,0,0.75);
-    color: #FFD700;
-    text-shadow: 0 0 8px rgba(255,204,0,0.6);
+    background: linear-gradient(90deg, rgba(255,180,0,0.15), rgba(255,220,0,0.22), rgba(255,180,0,0.15));
+    border: 2px solid rgba(255,200,0,0.85);
+    color: #FFE040;
+    text-shadow: 0 0 12px rgba(255,210,0,0.9), 0 0 30px rgba(255,160,0,0.5);
+    box-shadow: 0 0 20px rgba(255,180,0,0.3), inset 0 0 12px rgba(255,180,0,0.08);
   }
   #result-badge.is-zonk {
-    background: rgba(80,40,10,0.45);
-    border: 2px solid rgba(120,70,20,0.55);
-    color: #7a5030;
+    background: linear-gradient(90deg, rgba(180,20,20,0.15), rgba(220,30,30,0.2), rgba(180,20,20,0.15));
+    border: 2px solid rgba(220,40,40,0.8);
+    color: #FF4444;
+    text-shadow: 0 0 10px rgba(255,50,50,0.8);
+    box-shadow: 0 0 16px rgba(200,20,20,0.25);
   }
 
   /* queue */
@@ -220,8 +318,8 @@
     display: none;
     margin-top: 5px;
     font-size: 10px;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 1px;
+    color: rgba(255,140,60,0.4);
+    letter-spacing: 2px;
     font-family: monospace;
   }
 </style>
